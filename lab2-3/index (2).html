@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>First Three.js app</title>
+  <style>
+    body {
+      margin: 0;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="c"></canvas>
+  <script src="three.js"></script>
+  <script>
+    const canvas = document.querySelector("#c");
+    const renderer = new THREE.WebGLRenderer({ canvas });
+
+    const fov = 75;
+    const aspect = 2;
+    const near = 0.1;
+    const far = 5;
+    const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+    camera.position.z = 2;
+
+    const scene = new THREE.Scene();
+
+    {
+      const color = 0xffffff;
+      const intensity = 1;
+      const light = new THREE.DirectionalLight(color, intensity);
+      light.position.set(-1, 2, 4);
+      scene.add(light);
+    }
+
+    // градиентовая заливка - для лабы 3 
+    let texture = new THREE.TextureLoader().load('https://threejs.org/examples/textures/uv_grid_opengl.jpg')
+    texture.wrapS = THREE.RepeatWrapping
+    texture.wrapT = THREE.RepeatWrapping
+    let materialTexture = new THREE.MeshLambertMaterial({
+      map: texture,
+    });
+
+    //2d обьект - для лабы 2
+    const geometryPlane = new THREE.PlaneGeometry(1, 1);
+    const materialPlane = new THREE.MeshBasicMaterial({ color: 0xffff00, side: THREE.DoubleSide });
+    const plane = new THREE.Mesh(geometryPlane, materialPlane);
+
+    // параллелограмм - для лабы 2
+    let points = [];
+    points.push(new THREE.Vector2(0, 0));
+    points.push(new THREE.Vector2(3, 0));
+    points.push(new THREE.Vector2(5, 3));
+    points.push(new THREE.Vector2(2, 3));
+    for (let i = 0; i < points.length; i++) {
+      points[i].multiplyScalar(0.25);
+    }
+    const shape = new THREE.Shape(points);
+    const geimertyParalelogram = new THREE.ShapeGeometry(shape);
+    const materialParalelogram = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+    const paralelogram = new THREE.Mesh(geimertyParalelogram, materialParalelogram)
+
+    // круг - для лабы 3
+    const geometryCircle = new THREE.CircleGeometry(0.5, 50);
+    const materialCircle = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+    const circle = new THREE.Mesh(geometryCircle, materialTexture);
+    const circle2 = new THREE.Mesh(geometryCircle, materialCircle);
+    const circle3 = new THREE.Mesh(geometryCircle, materialCircle);
+
+
+    scene.add(circle, circle2, circle3, paralelogram, plane);
+    circle.position.x = 0;
+    circle2.position.x = 1;
+    circle3.position.x = 2;
+    paralelogram.position.y = -0.3;
+    paralelogram.position.x = -1.7;
+    plane.position.x = -2.3;
+
+
+    function render() {
+      renderer.render(scene, camera);
+
+      requestAnimationFrame(render);
+    }
+    requestAnimationFrame(render);
+  </script>
+</body>
+
+</html>

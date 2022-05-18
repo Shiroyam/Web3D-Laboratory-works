@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>First Three.js app</title>
+    <style>
+      body {
+        margin: 0;
+      }
+
+      canvas {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="c"></canvas>
+    <script src="three.js"></script>
+    <script>
+      const canvas = document.querySelector("#c");
+      const renderer = new THREE.WebGLRenderer({ canvas });
+
+      const fov = 75;
+      const aspect = 2;
+      const near = 0.1;
+      const far = 5;
+      const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+      camera.position.z = 2;
+
+      const scene = new THREE.Scene();
+
+      {
+        const color = 0xffffff;
+        const intensity = 1;
+        const light = new THREE.DirectionalLight(color, intensity);
+        light.position.set(-1, 2, 4);
+        scene.add(light);
+      }
+
+      //пирамида
+      const geometry2 = new THREE.ConeBufferGeometry(1, 1, 4, 1);
+
+      // куб
+      const geometry = new THREE.BoxGeometry(1, 1, 1);
+
+      // сфера
+      const geometry3 = new THREE.SphereGeometry(0.5, 32, 16);
+
+      // текстура для объектов
+      const textureAnimals = new THREE.TextureLoader().load(
+        "https://r105.threejsfundamentals.org/threejs/resources/images/wall.jpg"
+      );
+
+      let materialAnimal = new THREE.MeshBasicMaterial({
+        map: textureAnimals,
+      });
+
+      const cube = new THREE.Mesh(geometry, materialAnimal);
+      const piramyda = new THREE.Mesh(geometry2, materialAnimal);
+      const sfera = new THREE.Mesh(geometry3, materialAnimal);
+      scene.add(cube, piramyda, sfera);
+      cube.position.x = 0;
+      piramyda.position.x = 2;
+      sfera.position.x = -2;
+
+      function render() {
+        renderer.render(scene, camera);
+
+        requestAnimationFrame(render);
+
+        // анмимации
+        cube.rotation.x += 0.01;
+        cube.rotation.y += 0.01;
+
+        piramyda.rotation.x += 0.01;
+        piramyda.rotation.y += 0.01;
+
+        sfera.rotation.x += 0.01;
+        sfera.rotation.y += 0.01;
+      }
+      requestAnimationFrame(render);
+    </script>
+  </body>
+</html>
